@@ -1,0 +1,16 @@
+{
+    "name": "a.liksunov/library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aleksey Liksunov",
+            "email": "a.liksunov@clcorp.ru"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Library\\": "src"
+        }
+    }
+}
