@@ -34,7 +34,7 @@ class CheckCorrectLineService
             throw new InvalidArgumentException('invalid argument line');
         }
 
-        $line = preg_filter('[, \n\t\r]', '', $line);
+        $line = preg_replace('[, \n\t\r]', '', $line);
         $result = $this->deleteBrackets($line);
 
         return !$result;
