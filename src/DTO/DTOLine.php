@@ -2,11 +2,13 @@
 
 namespace Library\DTO;
 
+use Library\Contracts\DTOContract;
+
 /**
  * Class DTOLine
  * @package Library
  */
-class DTOLine
+class DTOLine implements DTOContract
 {
     private $line;
 
