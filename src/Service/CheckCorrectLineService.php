@@ -30,7 +30,7 @@ class CheckCorrectLineService
     {
         $line = $this->dto->getLine();
 
-        if ($result = preg_match('^[(), \n\t\r]', $line)) {
+        if ($result = preg_match('[^(), \n\t\r]', $line)) {
             throw new InvalidArgumentException('invalid argument line');
         }
 
