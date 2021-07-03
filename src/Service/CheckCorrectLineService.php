@@ -32,9 +32,7 @@ class CheckCorrectLineService
      */
     public function handle(): bool
     {
-        $result = $this->checkBrackets($this->dto, $this->brackets);
-
-        return !$result;
+        return $this->checkBrackets($this->dto, $this->brackets);
     }
 
     /**
