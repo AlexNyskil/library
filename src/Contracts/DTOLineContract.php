@@ -2,10 +2,10 @@
 
 namespace Library\Contracts;
 
-interface DTOContract
+interface DTOLineContract
 {
     /**
-     * DTOContract constructor.
+     * DTOLineContract constructor.
      *
      * @param string $line
      */
@@ -20,4 +20,9 @@ interface DTOContract
      * @return string
      */
     public function getLine();
+
+    /**
+     * @return array
+     */
+    public function getArrayLine();
 }

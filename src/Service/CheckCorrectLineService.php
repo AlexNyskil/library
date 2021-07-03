@@ -2,7 +2,8 @@
 
 namespace Library\Service;
 
-use Library\Contracts\DTOContract;
+use Library\Contracts\DTOBracketContract;
+use Library\Contracts\DTOLineContract;
 use Library\Exceptions\InvalidArgumentException;
 
 /**
@@ -12,15 +13,18 @@ use Library\Exceptions\InvalidArgumentException;
 class CheckCorrectLineService
 {
     private $dto;
+    private $brackets;
 
     /**
      * CheckCorrectLineService constructor.
      *
-     * @param DTOContract $dto
+     * @param DTOLineContract $dto
+     * @param DTOBracketContract $brackets
      */
-    public function __construct(DTOContract $dto)
+    public function __construct(DTOLineContract $dto, DTOBracketContract $brackets)
     {
         $this->dto = $dto;
+        $this->brackets = $brackets;
     }
 
     /**
@@ -28,40 +32,41 @@ class CheckCorrectLineService
      */
     public function handle(): bool
     {
-        $line = $this->dto->getLine();
-
-        if ($result = preg_match('[^(), \n\t\r]', $line)) {
-            throw new InvalidArgumentException('invalid argument line');
-        }
-
-        $line = preg_replace('[, \n\t\r]', '', $line);
-        $result = $this->deleteBrackets($line);
+        $result = $this->checkBrackets($this->dto, $this->brackets);
 
         return !$result;
     }
 
     /**
-     * @param string $line
+     * @param DTOLineContract $line
+     * @param DTOBracketContract $brackets
      *
-     * @return int
+     * @return bool
      */
-    private function deleteBrackets(string $line)
+    private function checkBrackets(DTOLineContract $line, DTOBracketContract $brackets)
     {
-        $chars = preg_split('//', $line, -1, PREG_SPLIT_NO_EMPTY);
-        $stop = false;
+        $firstChar = $brackets->getFirstChar();
+        $lastChar = $brackets->getLastChar();
+        $line = $line->getArrayLine();
+        $stack = [];
+        $success = false;
 
-        while (count($chars) && !$stop) {
-            $stop = true;
-            for ($i = 0; $i < count($chars) - 1; $i++) {
-                if ($chars[$i] === '(' && $chars[$i+1] === ')') {
-                    unset($chars[$i], $chars[$i+1]);
-                    $i++;
-                    $stop = false;
+        for ($i = 0; $i < count($line); $i++ ) {
+            if ($line[$i] === $firstChar) {
+                $stack[] = $line[$i];
+            } elseif($line[$i] === $lastChar) {
+                if (empty($stack)) {
+                    break;
+                }
+
+                array_pop($stack);
+
+                if ($i + 1 === count($line) && empty($stack)) {
+                    $success = true;
                 }
             }
-            $chars = array_values($chars);
         }
 
-        return count($chars);
+        return $success;
     }
 }
